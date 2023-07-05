@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.daenx.myadmin.test.mapper.TestPeopleMapper">
+  <resultMap id="BaseResultMap" type="cn.daenx.myadmin.test.domain.po.TestPeople">
+    <!--@mbg.generated-->
+    <!--@Table test_people-->
+    <id column="id" jdbcType="LONGVARCHAR" property="id" />
+    <result column="name" jdbcType="LONGVARCHAR" property="name" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="sex" jdbcType="LONGVARCHAR" property="sex" />
+    <result column="create_id" jdbcType="LONGVARCHAR" property="createId" />
+    <result column="create_time" jdbcType="LONGVARCHAR" property="createTime" />
+    <result column="update_id" jdbcType="LONGVARCHAR" property="updateId" />
+    <result column="update_time" jdbcType="LONGVARCHAR" property="updateTime" />
+    <result column="is_delete" jdbcType="LONGVARCHAR" property="isDelete" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, "name", age, sex, create_id, create_time, update_id, update_time, is_delete
+  </sql>
+
+  <select id="getPage" resultType="cn.daenx.myadmin.test.domain.po.TestPeople">
+    SELECT tp.*
+    FROM test_people tp
+    <where>
+      and tp.is_delete = 0
+      <if test="vo.age != null">
+        and tp.age = #{vo.age}
+      </if>
+      <if test="vo.name != null and vo.age != ''">
+        and tp.name like CONCAT('%', #{vo.name}, '%')
+      </if>
+      <if test="vo.sex != null and vo.sex != ''">
+        and tp.sex = #{vo.sex}
+      </if>
+      <if test="vo.startTime != null and vo.startTime != '' and vo.endTime != null and vo.endTime != ''">
+        and tp.create_time between #{vo.startTime} and #{vo.endTime}
+      </if>
+    </where>
+    <choose>
+      <when test='vo.orderByColumn != null and vo.orderByColumn != ""'>
+        order by tp.${vo.orderByColumn}
+        <choose>
+          <when test='vo.isAsc == null or vo.isAsc == "" or vo.isAsc == "ASC" or vo.isAsc == "asc" or vo.isAsc == "ascending"'>
+            ASC
+          </when>
+          <otherwise>
+            DESC
+          </otherwise>
+        </choose>
+      </when>
+      <otherwise>
+        order by tp.update_time DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="getPageWrapper" resultType="cn.daenx.myadmin.test.domain.po.TestPeople">
+    SELECT tp.*
+    FROM test_people tp
+      ${ew.customSqlSegment}
+  </select>
+</mapper>
